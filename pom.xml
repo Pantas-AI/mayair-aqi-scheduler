@@ -53,7 +53,7 @@
                             <!--                            copy files to deployment directory-->
                             <target>
                                 <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
-                                      tofile="${project.build.directory}/../deployment/web.jar"/>
+                                      tofile="${project.build.directory}/../deployment/mayair-aqi.jar"/>
                                 <copy todir="${project.build.directory}/../deployment/config">
                                     <fileset dir="src/main/resources" erroronmissingdir="false"/>
                                 </copy>
