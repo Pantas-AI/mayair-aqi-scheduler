@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://pantasaitech:cnbtalxSmaSZebhX@cluster0.1tismtf.mongodb.net/?retryWrites=true&w=majority
+      database: aqi
+
+waqi:
+  token: bcaf386a1f4c5260e7cc19a895672ee5787ec0c5
