@@ -6,3 +6,7 @@ spring:
 
 waqi:
   token: bcaf386a1f4c5260e7cc19a895672ee5787ec0c5
+
+
+server:
+  port: 8081
