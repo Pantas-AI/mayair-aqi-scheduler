@@ -43,6 +43,28 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id> 1 </id>
+                        <phase>install</phase>
+                        <configuration>
+                            <!--                            copy files to deployment directory-->
+                            <target>
+                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                      tofile="${project.build.directory}/../deployment/web.jar"/>
+                                <copy todir="${project.build.directory}/../deployment/config">
+                                    <fileset dir="src/main/resources" erroronmissingdir="false"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
