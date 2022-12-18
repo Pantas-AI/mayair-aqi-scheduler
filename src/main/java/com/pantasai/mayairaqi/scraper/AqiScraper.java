@@ -38,6 +38,7 @@ public class AqiScraper {
         getStationList().forEach(station -> {
             String url = String.format("https://api.waqi.info/feed/@%s/?token=%s", station.idx(), config.getToken());
             try {
+                System.out.println("test");
                 FeedResponse response = restTemplate.getForObject(url, FeedResponse.class);
                 Readings readings = toReading(station, response);
                 readingRepository.save(readings);
