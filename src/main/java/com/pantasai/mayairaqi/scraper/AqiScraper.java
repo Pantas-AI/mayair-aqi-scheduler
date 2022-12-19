@@ -6,6 +6,7 @@ import com.pantasai.mayairaqi.scraper.bounds.BoundsResponse;
 import com.pantasai.mayairaqi.scraper.feed.FeedResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -39,6 +40,12 @@ public class AqiScraper {
 
     @Scheduled(cron = "0 0 * * * ?")
     public void scrapeAllStation() {
+        List<Readings> readings = getAllReadings();
+
+        readingRepository.saveAll(readings);
+    }
+
+    private List<Readings> getAllReadings() {
         List<Readings> readings = getStationFlux()
                 .flatMap(station -> {
                     String url = String.format("https://api.waqi.info/feed/@%s/?token=%s", station.idx(), config.getToken());
@@ -46,24 +53,24 @@ public class AqiScraper {
                             .uri(url)
                             .retrieve()
                             .bodyToMono(FeedResponse.class)
+                            .map(response -> Pair.of(station, response))
                             .onErrorComplete();
                 })
-                .map(this::toReading)
+                .map(pair -> toReading(pair.getFirst(), pair.getSecond()))
                 .collectList()
                 .onErrorResume(e -> Mono.just(new ArrayList<>()))
                 .block();
-
-        readingRepository.saveAll(readings);
+        return readings;
     }
 
-    private Readings toReading(FeedResponse response) {
+    private Readings toReading(Station station, FeedResponse response) {
         Map<String, String> values = new HashMap<>();
         values.put("aqi", response.data().aqi());
         for (Map.Entry<String, Map<String, String>> data : response.data().iaqi().entrySet()) {
             values.put(data.getKey(), data.getValue().get("v"));
         }
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
-        return new Readings(response.data().idx(), now, values);
+        return new Readings(station.idx(), now, values);
     }
 
     public Set<Station> getStationList() {
