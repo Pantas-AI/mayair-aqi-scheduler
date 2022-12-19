@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pid=`ps -ef | grep java | grep web.jar | awk '{printf $2}'`
+pid=`ps -ef | grep java | grep mayair-aqi.jar | awk '{printf $2}'`
 
 if [ $pid ];
 then
