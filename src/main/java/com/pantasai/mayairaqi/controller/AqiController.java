@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -37,7 +38,7 @@ public class AqiController {
                     map.put(key, new PastDataList(key, new ArrayList<>()));
                 }
 
-                map.get(key).values().add(new TimestampGraph(reading.timestamp(), entry.getValue()));
+                map.get(key).values().add(new TimestampGraph(toUTC(reading.timestamp().withSecond(0)), entry.getValue()));
             }
         }
 
@@ -51,5 +52,9 @@ public class AqiController {
         response.setStatus(403);
         response.setContentType(MediaType.TEXT_PLAIN_VALUE);
         response.getWriter().write(e.getMessage());
+    }
+
+    private String toUTC(LocalDateTime dateTime) {
+        return dateTime.toString() + ":00Z";
     }
 }
